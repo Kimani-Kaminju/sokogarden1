@@ -3,9 +3,12 @@ from flask import *
 import pymysql
 #pymysql-allows one to create a connection to the sql database
 
+import os
+
 #create app
 app = Flask(__name__)
-
+#below we configure where product image shall be saved
+app.config["UPLOAD_FOLDER"] = 'static/images'
 
 #Define sign up/register url endpoint
 @app.route("/api/signup",methods=["POST"])
@@ -78,6 +81,49 @@ def signin():
             user = cursor.fetchone()
             return jsonify({"message" : "Login success" , "user": user})
 
+
+#Define url endpoint
+@app.route("/api/addproduct",methods = ["POST"])
+def products():
+    if request.method == "POST":
+        #details to pass from postman
+        product_name = request.form["product_name"]
+        product_description = request.form["product_description"]
+        product_cost = request.form["product_cost"]
+        product_photo = request.files["product_photo"]
+        product_category = request.form["product_category"]
+        
+        #since the product is a type of a file we shall extract the name of the product and that name shall be stored into the database whill the photo of the product shall be stored into the static/images folder
+
+        filename = product_photo.filename
+
+        #specify where the image will be saved
+        
+        photo_path = os.path.join(app.config["UPLOAD_FOLDER"],filename)
+
+        #save the image
+        product_photo.save(photo_path)
+        #create a connection of the db to the postman
+        connection = pymysql.connect(host="localhost",password="",user="root",database="sokogarden")
+
+        #create cursor
+        cursor = connection.cursor()
+
+        #sql structure for insert
+        sql = "INSERT INTO product_details( product_name,product_description,product_cost,product_photo,product_category) values (%s,%s,%s,%s,%s)"
+
+        
+        #create a tuple to hold the data
+        data = (product_name, product_description, product_cost, filename, product_category)
+
+        #use cursor to execute the sql query
+        cursor.execute(sql,data)
+
+        #commit the changes to the database
+        connection.commit()
+
+       #response to user
+        return jsonify({"message" : "Product added Successfully"}) 
 
 #Run
 app.run(debug=True)

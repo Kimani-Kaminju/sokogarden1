@@ -8,7 +8,7 @@ import pymysql
 app = Flask(__name__)
 
 #Define url endpoint
-@app.route("/api/products",methods = ["POST"])
+@app.route("/api/addproduct",methods = ["POST"])
 def products():
     if request.method == "POST":
         #details to pass from postman
@@ -25,7 +25,7 @@ def products():
         cursor = connection.cursor()
 
         #sql structure for insert
-        sql = "INSERT INTO products( product_name, product_description, product_cost, product_photo, product_category values (%s,%s,%s,%s,%s)"
+        sql = "INSERT INTO product_details( product_name,product_description,product_cost,product_photo,product_category) values (%s,%s,%s,%s,%s)"
 
         
         #create a tuple to hold the data
