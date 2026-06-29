@@ -25,7 +25,8 @@ def products():
         cursor = connection.cursor()
 
         #sql structure for insert
-        sql = "insert to products( product_name, product_description, product_cost, product_photo, product_category)"
+        sql = "INSERT INTO products( product_name, product_description, product_cost, product_photo, product_category values (%s,%s,%s,%s,%s)"
+
         
         #create a tuple to hold the data
         data = (product_name, product_description, product_cost, product_photo, product_category)
@@ -34,7 +35,10 @@ def products():
         cursor.execute(sql,data)
 
         #commit the changes to the database
-        connection.commit
+        connection.commit()
 
        #response to user
-    return jsonify({"message" : "Product entered"}) 
+        return jsonify({"message" : "Product entered"}) 
+
+#Run
+app.run(debug=True)
