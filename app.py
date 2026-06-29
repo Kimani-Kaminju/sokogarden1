@@ -72,7 +72,7 @@ def signin():
         count = cursor.rowcount
 
         if count == 0:
-            return jsonify({"message": "Login failed.Please check on your details enterer"})   
+            return jsonify({"message": "Login failed.Please check on your details entered"})   
         else:
             #if the user is there, take the details of the user and store them onto a variable and return a message of success
             user = cursor.fetchone()
